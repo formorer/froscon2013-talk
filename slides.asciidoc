@@ -1,0 +1,148 @@
+//
+// Export to...
+//
+// dzslides with embedded assets:
+// asciidoc slides.asciidoc
+//
+// dzslides with embedded assets:
+// asciidoc -a data-uri -a linkcss! slides.asciidoc
+//
+// HTML5:
+// asciidoc -b html5 -o outline.html slides.asciidoc
+//
+= Finger weg von meiner Verbindung  Hochverfuegbare Firewalls mit Linux =
+Alexander Wirt @credativ <alexander.wirt@credativ.de>
+v1.0, August 2013
+:title: Finger weg von meiner Verbindung - Hochverfügbare Firewalls mit Linux
+:description: Mein Talk au der Froscon 2013
+:copyright: CC BY-SA 2.0
+:website: http://www.credativ.com
+:slidesurl: https://github.com/formorer/froscon2013-talk
+:imagesdir: images
+:backend: dzslides
+:linkcss: true
+:dzslides-style: formorer
+:dzslides-transition: fade
+:dzslides-fonts: family=Yanone+Kaffeesatz:100,175,50,175&family=Cedarville+Cursive
+:dzslides-highlight: monokai
+// disable syntax highlighting unless turned on explicitly
+//syntax: no-highlight
+
+[{topic}]
+== {slidesurl}
+
+//image::qrcode.png[role="middle stretch-y"]
+['qrcode', target='presentation-qrcode.png', size=20, alt='http://{slidesurl}', role='middle stretch-y']
+----
+https://github.com/formorer/froscon2013-talk
+----
+
+[{topic}]
+== Wer bin ich?
+
+* technischer Leiter bei der credativ GmbH
+* Debian Developer seit 2003
+* Maintainer von (unter anderem) 
+   - Nagios
+   - Icinga
+   - iproute
+   - keepalived
+   - conntrackd
+
+[{topic}]
+== Das Problem
+
+* Bei einer Firewall mit Standby führt Failover zum Verbindungsabruch
+
+[{topic}]
+== Die Ursache
+
+* Firewalls sind heutzutage *Stateful*
+* Diese Informationen gehen beim Failover verloren
+
+[{topic}]
+== Connection trackings
+
+* Der Linuxkernel verwendet connection tracking um den Status einer Verbindung zu tracken
+
+[{topic}]
+== conntrack speichert
+
+* Protokoll
+* Quell IP
+* Ziel IP
+* Quellport
+* Zielport
+* Status der Verbindung
+
+[{topic}]
+== conntrackd
+
+* Synchronisiert conntrack Verbindungsinformationen über mehrere Rechner
+* Unterstützt Primary/Backup und Multi-Primarys Setups
+* Kommunikation via TCP, UDP oder Multicast
+* Synchronisationsprotokolle: NOTRACK, FT-TW, ALARM
+
+[{topic}]
+== conntrackd - Kommunikation
+
+* TCP: *zuverlässig*, aber langsam
+* UDP: *unzuverlässig*, aber geringe Latenzen
+* Multicast: *unzuverlässig*, aber geringe Latenzen
+
+[{topic}]
+== conntrackd - NOTRACK
+
+* Basiert auf einem *unzuverlässigen* Protokoll
+* Sendet immer die *gesamten* State Informationen
+* Macht nur mit TCP als Transport Sinn
+
+[{topic}]
+== conntrackd - ALARM
+
+* Sendet *kontinuierlich* die gesamten State Informationen Richtung Backup
+* Sehr *Bandbreitenintensiv*
+* Macht Sinn mit UDP und Multicast
+
+[{topic}]
+== conntrackd - FT-TW
+
+* *zuverlässiges* Protokoll
+* erkennt den Verlust von Nachrichten
+* macht Sinn mit UDP und Multicast
+* Die Kombination von UDP  oder Multicast mit FT-TW wird *empfohlen*
+
+[{topic}]
+== Die Umsetzung
+
+* conntrackd benötigt einen HA Manager wie Pacemaker oder Keepalived
+* Beispielscripte liegen (bei Debian) /usr/share/doc/conntrackd/examples
+
+[{topic}]
+== Keepalived
+
+* verwendet VRRP (RFC 5798) für die Synchronisation von Nodes
+* Frontend für IPVS (Layer 4 Load Balancing)
+* schlank
+* leicht zu konfigurieren
+
+[{topic}]
+== Beispielsetup
+
+image::setup.png[{middle}]
+
+[{topic}]
+== verwendete Software
+
+* *Keepalived*: [detail]#http://keepalived.org#
+* *Conntrackd*: [detail]#http://conntrack-tools.netfilter.org/#
+* *Vagrant*: [detail]#http://www.vagrantup.com/#
+* *Puppet*: [detail]#https://puppetlabs.com/#
+* *Debian*: [detail]#http://www.debian.org/#
+
+[{topic}]
+== Allerletzte Informationen
+
+* *Talk*: [detail]#https://github.com/formorer/froscon2013-talk#
+* *Vagrant Konfiguration*: [detail]#https://github.com/formorer/vagrant-keepalived-conntrackd#
+* *Ich*: [detail]#alexander.wirt@credativ.de#
