@@ -144,6 +144,7 @@ image::setup.png[{middle}]
 [{topic}]
 == Allerletzte Informationen
 
-* *Talk*: [detail]#https://github.com/formorer/froscon2013-talk#
+* *Talk
+* *Source*: [detail]#https://github.com/formorer/froscon2013-talk#
 * *Vagrant Konfiguration*: [detail]#https://github.com/formorer/vagrant-keepalived-conntrackd#
 * *Ich*: [detail]#alexander.wirt@credativ.de#
