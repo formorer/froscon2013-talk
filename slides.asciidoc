@@ -139,6 +139,7 @@ image::setup.png[{middle}]
 * *Vagrant*: [detail]#http://www.vagrantup.com/#
 * *Puppet*: [detail]#https://puppetlabs.com/#
 * *Debian*: [detail]#http://www.debian.org/#
+* *Asciidoc*: [detail]#http://www.methods.co.nz/asciidoc/#
 
 [{topic}]
 == Allerletzte Informationen
